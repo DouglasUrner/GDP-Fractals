@@ -28,10 +28,16 @@ public class Fractal : MonoBehaviour {
 		materials[maxDepth, 2].color = Color.black;
 	}
 
+	public float maxRotationSpeed;
+
+	private float rotationSpeed;
+
 	private void Start() {
 		if (materials == null) {
 			InitializeMaterials();
 		}
+
+		rotationSpeed = Random.Range(-maxRotationSpeed, maxRotationSpeed);
 		gameObject.AddComponent<MeshFilter>().mesh = mesh;
 		gameObject.AddComponent<MeshRenderer>().material = material;
 		GetComponent<MeshRenderer>().material = materials[depth, Random.RandomRange(0, colors.Length)];
@@ -59,11 +65,15 @@ public class Fractal : MonoBehaviour {
 	public float minYieldSecs = 0.1f;
 	public float maxYieldSecs = 0.5f;
 
+	public float spawnProbability;
+
 	private IEnumerator CreateChildren() {
 		for (int i = 0; i < childDirections.Length; i++) {
-			yield return new WaitForSeconds(Random.Range(minYieldSecs, maxYieldSecs));
-			new GameObject("FractalChild").AddComponent<Fractal>().
-				Initialize(this, i);
+			if (Random.value < spawnProbability) {
+				yield return new WaitForSeconds(Random.Range(minYieldSecs, maxYieldSecs));
+				new GameObject("FractalChild").AddComponent<Fractal>().
+					Initialize(this, i);
+			}
 		}
 	}
 
@@ -75,15 +85,16 @@ public class Fractal : MonoBehaviour {
 		maxDepth = parent.maxDepth;
 		depth = parent.depth + 1;
 		childScale = parent.childScale;
+		spawnProbability = parent.spawnProbability;
 		transform.parent = parent.transform;
 		transform.localScale = Vector3.one * childScale;
 		transform.localPosition =
 			childDirections[childIndex] * (0.5f + 0.5f * childScale);
 		transform.localRotation = childOrientations[childIndex];
+		maxRotationSpeed = parent.maxRotationSpeed;
 	}
 
-	// Update is called once per frame
 	void Update () {
-
+		transform.Rotate(0f, rotationSpeed * Time.deltaTime, 0f);
 	}
 }
