@@ -14,7 +14,7 @@ public class Fractal : MonoBehaviour {
 
 	private void InitializeMaterials() {
 		materials = new Material[maxDepth + 1];
-		for (int i = 1; i <= maxDepth; i++) {
+		for (int i = 0; i <= maxDepth; i++) {
 			materials[i] = new Material(material);
 			materials[i].color = Color.Lerp(Color.white, Color.yellow, (float)i / maxDepth);
 		}
