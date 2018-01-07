@@ -142,9 +142,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   material: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  maxDepth: 4
+  maxDepth: 5
+  maxRotationSpeed: 12
   minYieldSecs: 0.1
   maxYieldSecs: 0.8
+  spawnProbability: 1
   childScale: 0.5
 --- !u!4 &109766300
 Transform:

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 public class Fractal : MonoBehaviour {
@@ -51,7 +52,8 @@ public class Fractal : MonoBehaviour {
 		Vector3.right,
 		Vector3.left,
 		Vector3.forward,
-		Vector3.back
+		Vector3.back,
+		Vector3.down
 	};
 
 	private static Quaternion[] childOrientations = {
@@ -59,7 +61,8 @@ public class Fractal : MonoBehaviour {
 		Quaternion.Euler(0f, 0f, -90f),
 		Quaternion.Euler(0f, 0f, 90f),
 		Quaternion.Euler(90f, 0f, 0f),
-		Quaternion.Euler(-90f, 0f, 0f)
+		Quaternion.Euler(-90f, 0f, 0f),
+		Quaternion.Euler(0f, 90f, 0f)
 	};
 
 	public float minYieldSecs = 0.1f;
@@ -68,7 +71,13 @@ public class Fractal : MonoBehaviour {
 	public float spawnProbability;
 
 	private IEnumerator CreateChildren() {
-		for (int i = 0; i < childDirections.Length; i++) {
+		int numDirections;
+		if (depth == 0) {
+			numDirections = childDirections.Length;
+		} else {
+			numDirections = childDirections.Length - 1;
+		}
+		for (int i = 0; i < numDirections; i++) {
 			if (Random.value < spawnProbability) {
 				yield return new WaitForSeconds(Random.Range(minYieldSecs, maxYieldSecs));
 				new GameObject("FractalChild").AddComponent<Fractal>().
