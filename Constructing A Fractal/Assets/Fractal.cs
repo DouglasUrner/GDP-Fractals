@@ -10,14 +10,22 @@ public class Fractal : MonoBehaviour {
 
 	private int depth;
 
-	private Material[] materials;
+	private Color[] colors = {Color.yellow, Color.red, Color.blue};
+	private Material[,] materials;
 
 	private void InitializeMaterials() {
-		materials = new Material[maxDepth + 1];
+		materials = new Material[maxDepth + 1, colors.Length];
 		for (int i = 0; i <= maxDepth; i++) {
-			materials[i] = new Material(material);
-			materials[i].color = Color.Lerp(Color.white, Color.yellow, (float)i / maxDepth);
+			float t = i / (float) (maxDepth - 1);
+			t *= t;
+			for (int j = 0; j < colors.Length; j++) {
+				materials[i, j] = new Material(material);
+				materials[i, j].color = Color.Lerp(Color.white, colors[j], t);
+			}
 		}
+		materials[maxDepth, 0].color = Color.magenta;
+		materials[maxDepth, 1].color = Color.green;
+		materials[maxDepth, 2].color = Color.black;
 	}
 
 	private void Start() {
@@ -26,7 +34,7 @@ public class Fractal : MonoBehaviour {
 		}
 		gameObject.AddComponent<MeshFilter>().mesh = mesh;
 		gameObject.AddComponent<MeshRenderer>().material = material;
-		GetComponent<MeshRenderer>().material = materials[depth];
+		GetComponent<MeshRenderer>().material = materials[depth, Random.RandomRange(0, colors.Length)];
 		if (depth < maxDepth) {
 			StartCoroutine(CreateChildren());
 		}
